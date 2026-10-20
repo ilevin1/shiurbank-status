@@ -40,7 +40,7 @@ export function applyResults(previous, results, now = Date.now()) {
   return state;
 }
 export function effectiveStatus(check, result, now = Date.now()) {
-  if (!result || !Number.isFinite(Date.parse(result.checkedAt)) || now - Date.parse(result.checkedAt) > staleAfterMs(check) || Date.parse(result.checkedAt) > now + 60000) return 'unknown';
+  if (!result || !['operational','degraded','outage','unknown','maintenance'].includes(result.status) || !Number.isFinite(Date.parse(result.checkedAt)) || now - Date.parse(result.checkedAt) > staleAfterMs(check) || Date.parse(result.checkedAt) > now + 60000) return 'unknown';
   return result.status;
 }
 export function overallStatus(state, now = Date.now()) {

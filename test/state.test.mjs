@@ -38,4 +38,5 @@ test('history records only actual observations and retains no invented past days
 test('future and invalid timestamps fail closed',()=>{
  assert.equal(effectiveStatus(CHECKS[0],{checkedAt:'invalid',status:'operational'},start),'unknown');
  assert.equal(effectiveStatus(CHECKS[0],{checkedAt:new Date(start+120000).toISOString(),status:'operational'},start),'unknown');
+ assert.equal(effectiveStatus(CHECKS[0],{checkedAt:new Date(start).toISOString(),status:'invalid'},start),'unknown');
 });
