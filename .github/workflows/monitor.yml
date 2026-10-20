@@ -7,7 +7,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '3-58/5 * * * *'
+    - cron: '*/5 * * * *'
 permissions:
   contents: write
 concurrency:

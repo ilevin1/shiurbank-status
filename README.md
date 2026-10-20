@@ -26,7 +26,7 @@ node --env-file=.monitor.env scripts/run.mjs --force --only=auth,audio
 
 ## Least-privilege monitor identity
 
-Create one dedicated, confirmed Supabase auth user and normal non-owner ShiurBank user, owning only a pending (unlisted) teacher and a private series with lifecycle email eligibility disabled. Do not use a website-owner account, real teacher account or service-role key for recurring checks. A permanent tiny audio fixture lives in that private series.
+Create one dedicated, confirmed Supabase auth user and normal non-owner ShiurBank user, owning only a pending (unlisted) teacher and a private series with lifecycle email eligibility disabled. Disable all email/push preferences and add the synthetic address to the application's canonical email suppression list, so campaigns cannot target it. Do not use a website-owner account, real teacher account or service-role key for recurring checks. A permanent tiny audio fixture lives in that private series.
 
 Store these as repository Actions **secrets**: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `MONITOR_EMAIL`, `MONITOR_PASSWORD`, `MONITOR_USER_ID`, `MONITOR_TEACHER_ID`, `MONITOR_SERIES_ID`, `MONITOR_SHIUR_ID`, `MEDIA_ORIGIN`. Do not put them in the page, history, workflow logs, issue bodies or git. The Supabase service-role/database credentials are never needed by the deployed monitor.
 
