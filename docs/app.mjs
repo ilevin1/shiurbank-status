@@ -29,7 +29,10 @@ function render(){
   details.append(body);list.append(details);
  }
  const active=$('#active-incidents');active.replaceChildren();const history=$('#history-list');history.replaceChildren();
- for(const incident of state.incidents||[]) (incident.resolvedAt?history:active).append(incidentNode(incident,!incident.resolvedAt));
+ const open=(state.incidents||[]).filter(incident=>!incident.resolvedAt);
+ if(open.length>1){const group=element('article','incident active');group.append(element('h3','',`${open.length} open service incidents`),element('p','tag','Repeated failed checks detected'),element('p','',open.map(incident=>CHECKS.find(check=>check.id===incident.checkId)?.name || 'Service').join(' · ')));active.append(group);}
+ else if(open.length)active.append(incidentNode(open[0],true));
+ for(const incident of state.incidents||[])if(incident.resolvedAt)history.append(incidentNode(incident,false));
  if(!history.children.length)history.append(element('p','empty',state.startedAt?`No resolved incidents recorded since monitoring began on ${date(state.startedAt)}.`:'History begins when the monitor records its first checks.'));
 }
 function validState(value){return value?.version===1&&value.checks&&typeof value.checks==='object'&&Array.isArray(value.incidents)&&typeof value.generatedAt==='string'&&Number.isFinite(Date.parse(value.generatedAt));}

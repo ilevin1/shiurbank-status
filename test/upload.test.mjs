@@ -5,7 +5,7 @@ const env={SUPABASE_URL:'https://ztihjogbjwgrwgwwvgil.supabase.co',SUPABASE_ANON
 function harness({lostCreate=false,cleanupFails=false,wrongBytes=false,badCors=false}={}){
  let created=false;let removed=false;let notified=false;let writes=0;let generatedTitle;
  const key='shiurim/private/test.mp3';
- const uploaded={fileKey:key,uploadReservationId:'reservation',uploadUrl:'https://media.example/test?private-signature=secret',fileUrl:'https://media.example/test',headers:{'Content-Type':'audio/mpeg'}};
+ const uploaded={fileKey:key,uploadReservationId:'reservation',uploadUrl:'https://media.example/test?private-signature=secret',fileUrl:'https://media.example/test',headers:{'Content-Type':'audio/mpeg'},fileSize:bytes.length,fileType:'audio/mpeg',converted:true};
  const transport={
   async jsonRequest(url,options={}){
    const route=new URL(url).pathname;
@@ -28,6 +28,7 @@ function harness({lostCreate=false,cleanupFails=false,wrongBytes=false,badCors=f
    if(new URL(url).origin==='https://media.example'){
     if(options.method==='OPTIONS')return{headers:new Headers({'access-control-allow-origin':badCors?'https://wrong.example':'https://www.shiurbank.org','access-control-allow-methods':'PUT','access-control-allow-headers':'*'}),bytes:Buffer.alloc(0)};
     if(options.method==='PUT')return{bytes:Buffer.alloc(0)};
+    if(!options.headers.Range)return{bytes};
     const [start,end]=options.headers.Range.replace('bytes=','').split('-').map(Number);
     return{headers:new Headers({'content-range':`bytes ${start}-${end}/${bytes.length}`,'access-control-allow-origin':'https://www.shiurbank.org'}),bytes:wrongBytes?Buffer.alloc(end-start+1):bytes.subarray(start,end+1)};
    }
