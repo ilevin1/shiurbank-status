@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10161d">
+  <meta name="description" content="Current availability, recent service checks and incident history for ShiurBank.">
+  <title>ShiurBank Status</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%2310161d'/%3E%3Cpath d='M8 21h6l3-9 6 18 3-9h6' fill='none' stroke='%2366d6a6' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to service status</a>
+  <div class="page">
+    <header><a class="brand" href="https://www.shiurbank.org" aria-label="ShiurBank home"><span class="brand-mark" aria-hidden="true">ש</span>ShiurBank<span class="brand-divider"></span><span class="brand-status">Status</span></a><a class="back" href="https://www.shiurbank.org">Visit ShiurBank <span aria-hidden="true">↗</span></a></header>
+    <main id="main">
+      <div class="eyebrow">SERVICE AVAILABILITY</div>
+      <section id="overview" class="overview" data-status="unknown" aria-live="polite"><span class="large-dot" aria-hidden="true"></span><div><h1 id="headline">Checking the latest service status</h1><p id="subhead">Loading observations from our independent monitor.</p></div></section>
+      <div class="meta"><span id="updated">No observations loaded</span><button id="refresh" type="button">Refresh status <span aria-hidden="true">↻</span></button></div>
+      <p id="data-warning" class="notice" hidden></p>
+      <section id="active-incidents" aria-label="Active incidents"></section>
+      <section aria-labelledby="services-heading"><div class="section-top"><h2 id="services-heading">Services</h2><span class="muted small">Expand a service for its checks</span></div><div id="services" class="services"></div></section>
+      <div class="legend"><span><i data-status="operational"></i> Operational</span><span><i data-status="degraded"></i> Degraded</span><span><i data-status="outage"></i> Outage</span><span><i data-status="unknown"></i> Unknown / no observation</span></div>
+      <section class="history" aria-labelledby="history-heading"><h2 id="history-heading">Incident history</h2><div id="history-list"><p class="muted">Waiting for monitoring history.</p></div></section>
+      <aside class="about"><h2>What this page can tell you</h2><p>These checks exercise real ShiurBank requests, including audio and small private test uploads. Most run about every five minutes; downloads run every 15 minutes and uploads every hour. Two failed scheduled observations confirm an outage; two successful observations confirm recovery.</p><p>Checks run from one external location. Scheduling can be delayed. Missing or old observations show as unknown. A successful check does not guarantee every device, network, account or file is working. App crashes, offline mode and background playback require separate device testing.</p><p>This page and its observation history are hosted separately from ShiurBank’s website, API, database and audio storage.</p></aside>
+    </main>
+    <footer><span>ShiurBank service status</span><a href="https://github.com/ilevin1/shiurbank-status/actions/workflows/monitor.yml">Monitor runs <span aria-hidden="true">↗</span></a><a href="https://www.shiurbank.org/help">Get help <span aria-hidden="true">↗</span></a></footer>
+  </div>
+  <noscript><p class="notice">JavaScript is required to show current check results. <a href="https://raw.githubusercontent.com/ilevin1/shiurbank-status/refs/heads/monitor-data/state.json">Read the latest observations</a>.</p></noscript>
+</body>
+</html>

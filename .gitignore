@@ -1,0 +1,8 @@
+.monitor.env
+.env*
+!.env.example
+.state/
+output/
+node_modules/
+*.log
+.DS_Store

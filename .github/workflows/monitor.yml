@@ -1,0 +1,46 @@
+name: Check ShiurBank services
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Run all checks, including hourly upload checks
+        type: boolean
+        default: false
+  schedule:
+    - cron: '3-58/5 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: service-monitor
+  cancel-in-progress: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run real service checks and publish observations
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          MONITOR_EMAIL: ${{ secrets.MONITOR_EMAIL }}
+          MONITOR_PASSWORD: ${{ secrets.MONITOR_PASSWORD }}
+          MONITOR_USER_ID: ${{ secrets.MONITOR_USER_ID }}
+          MONITOR_TEACHER_ID: ${{ secrets.MONITOR_TEACHER_ID }}
+          MONITOR_SERIES_ID: ${{ secrets.MONITOR_SERIES_ID }}
+          MONITOR_SHIUR_ID: ${{ secrets.MONITOR_SHIUR_ID }}
+          MEDIA_ORIGIN: ${{ secrets.MEDIA_ORIGIN }}
+          PUBLIC_SERIES_ID: ${{ vars.PUBLIC_SERIES_ID }}
+          PUBLIC_TEACHER_ID: ${{ vars.PUBLIC_TEACHER_ID }}
+          SEARCH_QUERY: ${{ vars.SEARCH_QUERY }}
+          ENABLE_UPLOAD_CHECKS: ${{ vars.ENABLE_UPLOAD_CHECKS }}
+          FORCE_CHECKS: ${{ inputs.force }}
+        run: |
+          if [ "$FORCE_CHECKS" = "true" ]; then
+            node scripts/run.mjs --publish --force
+          else
+            node scripts/run.mjs --publish
+          fi
