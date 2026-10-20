@@ -44,3 +44,5 @@ async function refresh(){
 }
 try{const saved=JSON.parse(localStorage.getItem('shiurbank-status-v1'));if(validState(saved))state=saved;}catch{}
 $('#refresh').addEventListener('click',refresh);render();refresh();setInterval(refresh,60000);setInterval(render,15000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();refresh();}});
+window.addEventListener('pageshow',()=>{render();refresh();});
