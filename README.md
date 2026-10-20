@@ -30,6 +30,8 @@ Create one dedicated, confirmed Supabase auth user and normal non-owner ShiurBan
 
 Store these as repository Actions **secrets**: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `MONITOR_EMAIL`, `MONITOR_PASSWORD`, `MONITOR_USER_ID`, `MONITOR_TEACHER_ID`, `MONITOR_SERIES_ID`, `MONITOR_SHIUR_ID`, `MEDIA_ORIGIN`. Do not put them in the page, history, workflow logs, issue bodies or git. The Supabase service-role/database credentials are never needed by the deployed monitor.
 
+Each run signs out the monitor sessions it created using local session scope, avoiding accumulation of indefinitely refreshable test sessions. Cleanup never signs out other devices; a sign-out failure is reported as an authentication check failure.
+
 Repository **variables**: `PUBLIC_SERIES_ID`, `PUBLIC_TEACHER_ID`, `SEARCH_QUERY` identify existing public canaries. `ENABLE_UPLOAD_CHECKS=true` enables both write checks after billing review and validation. Missing or disabled checks appear unknown.
 
 ## What uploads test

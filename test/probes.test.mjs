@@ -40,3 +40,13 @@ test('the website check follows the actual module URL and requests only a bounde
   return{headers:new Headers({'content-type':'application/javascript'}),bytes:Buffer.alloc(1024)};
  }});await probes.website();assert.ok(calls[1].url.endsWith('/app-assets/renamed-version.js'));assert.equal(calls[1].options.headers.Range,'bytes=0-1023');assert.equal(calls[1].options.maxBytes,4096);
 });
+test('monitor sessions are signed out locally without revoking other device sessions',async()=>{
+ const calls=[];const env={SUPABASE_URL:'https://ztihjogbjwgrwgwwvgil.supabase.co',SUPABASE_ANON_KEY:'fake',MONITOR_EMAIL:'fake',MONITOR_PASSWORD:'fake',MONITOR_USER_ID:'monitor'};
+ const client=createProbes(env,{jsonRequest:async()=>({user:{id:'monitor'},access_token:'private-token',refresh_token:'private-refresh'}),request:async(url,options)=>{calls.push({url,options});}});
+ await client.session();await client.closeSessions();assert.equal(calls.length,1);assert.ok(calls[0].url.endsWith('/logout?scope=local'));assert.equal(calls[0].options.method,'POST');assert.deepEqual(calls[0].options.expected,[200,204]);
+});
+test('a failed session cleanup is observable',async()=>{
+ const env={SUPABASE_URL:'https://ztihjogbjwgrwgwwvgil.supabase.co',SUPABASE_ANON_KEY:'fake',MONITOR_EMAIL:'fake',MONITOR_PASSWORD:'fake',MONITOR_USER_ID:'monitor'};
+ const client=createProbes(env,{jsonRequest:async()=>({user:{id:'monitor'},access_token:'private-token',refresh_token:'private-refresh'}),request:async()=>{throw new CheckError('http_503');}});
+ await client.session();await assert.rejects(client.closeSessions(),{code:'auth_signout_failed'});
+});

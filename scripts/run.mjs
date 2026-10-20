@@ -22,12 +22,18 @@ if(publish) {
   try{prior=JSON.parse(await readFile('output/state.json','utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
 }
 const now=Date.now();
-const {probes}=createProbes(env);
+const {probes,closeSessions}=createProbes(env);
 const selected=CHECKS.filter(check=>(!only||only.includes(check.id))&&(force||isDue(check,prior.checks[check.id],now)));
 const results=[];
 // Reads run concurrently; fixture writes are sequential so cleanup never races another upload.
 results.push(...await Promise.all(selected.filter(check=>!check.id.startsWith('upload-')).map(check=>executeCheck(check,probes[check.id]))));
 for(const check of selected.filter(check=>check.id.startsWith('upload-'))) results.push(await executeCheck(check,probes[check.id]));
+try { await closeSessions(); }
+catch {
+  const result={id:'auth',outcome:'fail',reason:'auth_signout_failed',durationMs:0};
+  const index=results.findIndex(item=>item.id==='auth');
+  if(index<0)results.push(result);else results[index]=result;
+}
 const state=applyResults(prior,results,Date.now());
 await mkdir('output',{recursive:true});
 await writeFile('output/state.json',JSON.stringify(state,null,2)+'\n');
